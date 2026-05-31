@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - My Blog{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Back to Home -->
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary mb-4">← Back to Posts</a>
+            
+            <!-- Post Header -->
+            <article>
+                <h1 class="mb-3" style="font-weight: bold;">{{ post.title }}</h1>
+                
+                <div class="blog-meta mb-4 pb-3 border-bottom">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <small class="text-muted">
+                                By <strong>{{ post.author.username }}</strong><br>
+                                Published on <strong>{{ post.created_at|date:"F d, Y \a\t g:i A" }}</strong>
+                            </small>
+                            {% if post.updated_at != post.created_at %}
+                                <br>
+                                <small class="text-muted">
+                                    Last updated on {{ post.updated_at|date:"F d, Y \a\t g:i A" }}
+                                </small>
+                            {% endif %}
+                        </div>
+                        {% if user.is_authenticated and user == post.author %}
+                            <div class="col-md-4 text-md-end">
+                                <a href="{% url 'edit_post' post.pk %}" class="btn btn-sm btn-warning">✏️ Edit</a>
+                                <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-danger">🗑️ Delete</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Post Content -->
+                <div class="post-content mb-5">
+                    {{ post.content|linebreaks }}
+                </div>
+                
+                <!-- Post Footer -->
+                <div class="border-top pt-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">About the Author</h6>
+                            <p class="card-text">
+                                <strong>{{ post.author.get_full_name|default:post.author.username }}</strong>
+                            </p>
+                            <p class="card-text text-muted">
+                                <small>Member since 2024</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+{% endblock %}
